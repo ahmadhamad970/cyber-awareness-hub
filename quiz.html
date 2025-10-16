@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber Quiz</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <h1>Cyber Awareness Hub</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="quiz.html" class="active">Cyber Quiz</a></li>
+    </ul>
+  </nav>
+
+  <section class="content">
+    <h2>Cyber Awareness Quiz</h2>
+    <p>Which of these is the strongest password?</p>
+    <button onclick="answer(0)">password123</button>
+    <button onclick="answer(1)">Ahm@d#2025</button>
+    <button onclick="answer(2)">123456</button>
+    <p id="result"></p>
+  </section>
+
+  <footer>
+    <p>© 2025 Ahmed Hamad — All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    function answer(choice) {
+      const result = document.getElementById("result");
+      if (choice === 1)
+        result.textContent = "✅ Correct! Strong password.";
+      else
+        result.textContent = "❌ Weak password, try again.";
+    }
+  </script>
+</body>
+</html>
