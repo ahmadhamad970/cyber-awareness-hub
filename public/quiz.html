@@ -1,0 +1,353 @@
+<!-- Whole quiz page: loads quiz categories & handles gameplay -->
+<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber Quiz | Cyber Awareness Hub</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    
+    .content { max-width: 800px; margin: 2rem auto; text-align: left; }
+
+    
+    .quiz-categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    
+    .quiz-card {
+      background: #1a1f2e;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      transition: transform 0.3s, background 0.3s;
+      cursor: pointer;
+    }
+
+    
+    .quiz-card:hover { background: #6f35f7; transform: translateY(-6px); }
+
+    .quiz-card h3 { margin-bottom: 10px; color: #fff; }
+    .quiz-card p { color: #ccc; font-size: 0.9rem; }
+
+    
+    #quiz-container {
+      margin-top: 1rem;
+      background: #1a1f2e;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    /* Question text styling */
+    #question {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #ff0000;
+    }
+
+    /* Answer buttons */
+    #answers button {
+      display: block;
+      width: 100%;
+      background: #222;
+      color: #f9f9f9;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 10px;
+      margin: 8px 0;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+   
+    #answers button:hover {
+      background: #6f35f7;
+      border-color: #6f35f7;
+    }
+
+    
+    #nextBtn, #backBtn {
+      background: #6f35f7;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background 0.3s;
+    }
+
+    #nextBtn:hover, #backBtn:hover { background: #8b5cf6; }
+
+    
+    .correct { color: #2ecc71; }
+    .wrong { color: #e74c3c; }
+
+    
+    .progress-container {
+      width: 100%;
+      height: 20px;
+      border-radius: 10px;
+      background: #2f3640;
+      margin-top: 15px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 10px;
+      text-align: center;
+      color: #fff;
+      font-size: 0.9rem;
+      line-height: 20px;
+      transition: width 0.4s ease;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <h1>Cyber Awareness Hub</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#" class="active">Cyber Quiz</a></li>
+    </ul>
+  </nav>
+
+  <section class="content">
+    <h2 id="quiz-title">Choose Your Cyber Quiz Category 🧠</h2>
+
+    <!-- Category selection section -->
+    <div id="category-section" class="quiz-categories">
+      <div class="quiz-card" onclick="startQuiz('social')"><h3>🧠 Social Engineering</h3><p>Human manipulation tactics quiz.</p></div>
+      <div class="quiz-card" onclick="startQuiz('ddos')"><h3>🌐 DDoS Attacks</h3><p>Distributed denial of service basics.</p></div>
+      <div class="quiz-card" onclick="startQuiz('phishing')"><h3>🎣 Phishing</h3><p>Spotting fake emails and scams.</p></div>
+      <div class="quiz-card" onclick="startQuiz('malware')"><h3>🦠 Malware</h3><p>Understanding malicious software types.</p></div>
+      <div class="quiz-card" onclick="startQuiz('network')"><h3>🔐 Network Security</h3><p>VPNs, firewalls, and encryption.</p></div>
+      <div class="quiz-card" onclick="startQuiz('passwords')"><h3>🔑 Password Security</h3><p>Protect your accounts effectively.</p></div>
+    </div>
+
+ 
+    <div id="quiz-container" style="display:none;">
+      <p id="question"></p>
+      <div id="answers"></div>
+
+      
+      <div style="margin-top:10px;">
+        <button id="backBtn" onclick="previousQuestion()" style="display:none;">Back</button>
+        <button id="nextBtn" onclick="nextQuestion()" style="display:none;">Next</button>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    /*social engineering questions */
+    const quizzes = {
+      social: [
+        {q:"What is social engineering?",a:["Hacking humans","Network attack","Malware type"],c:"Hacking humans"},
+        {q:"Tailgating means?",a:["Following into secure area","Data encryption","Network flooding"],c:"Following into secure area"},
+        {q:"Phishing belongs to?",a:["Social engineering","Encryption","Firewall"],c:"Social engineering"},
+        {q:"Baiting uses?",a:["USB traps","Firewalls","DNS"],c:"USB traps"},
+        {q:"Best protection?",a:["Awareness","Antivirus","Proxy"],c:"Awareness"},
+        {q:"Pretexting involves?",a:["Fake identity","Malware","Router access"],c:"Fake identity"},
+        {q:"Smishing is via?",a:["SMS","Email","Phone calls"],c:"SMS"},
+        {q:"Vishing uses?",a:["Voice","Video","VPN"],c:"Voice"},
+        {q:"Dumpster diving means?",a:["Trash info theft","VPN leak","Keylogging"],c:"Trash info theft"},
+        {q:"Goal of social engineer?",a:["Manipulate people","Encrypt data","Build firewall"],c:"Manipulate people"}
+      ],
+
+      /* ddos questions */
+      ddos: [
+        {q:"DDoS stands for?",a:["Distributed Denial of Service","Direct Data Overload","Digital Down Server"],c:"Distributed Denial of Service"},
+        {q:"Goal of DDoS?",a:["Overload system","Steal data","Encrypt files"],c:"Overload system"},
+        {q:"Botnet is?",a:["Infected device network","Firewall","Backup system"],c:"Infected device network"},
+        {q:"Ping of Death is?",a:["Large packets","Weak password","SQL attack"],c:"Large packets"},
+        {q:"Mitigation method?",a:["Rate limiting","Disable router","Ignore attack"],c:"Rate limiting"},
+        {q:"Layer 7 attack hits?",a:["Application layer","Physical","Transport"],c:"Application layer"},
+        {q:"Amplification attack uses?",a:["Misconfigured servers","Logs","Cookies"],c:"Misconfigured servers"},
+        {q:"DDoS traffic is often?",a:["Massive and fake","Encrypted","Normal"],c:"Massive and fake"},
+        {q:"To prevent DDoS use?",a:["CDN","FTP","DHCP"],c:"CDN"},
+        {q:"LOIC is?",a:["DDoS tool","Firewall","Protocol"],c:"DDoS tool"}
+      ],
+
+      phishing: [
+        {q:"Phishing aims to?",a:["Steal info","Encrypt files","Speed network"],c:"Steal info"},
+        {q:"Smishing uses?",a:["SMS","Email","Wi-Fi"],c:"SMS"},
+        {q:"Best defense?",a:["Check URLs","Click all links","Ignore security"],c:"Check URLs"},
+        {q:"Spear phishing targets?",a:["Specific people","All users","Networks"],c:"Specific people"},
+        {q:"Clone phishing copies?",a:["Legit emails","Files","Routers"],c:"Legit emails"},
+        {q:"Pharming does?",a:["Redirect users","Encrypt drives","Deletes apps"],c:"Redirect users"},
+        {q:"HTTPS means?",a:["Secure website","Fake site","Local network"],c:"Secure website"},
+        {q:"Urgent password request email is?",a:["Phishing","Safe","Backup"],c:"Phishing"},
+        {q:"Phishing can use?",a:["Fake websites","Hardware","Cables"],c:"Fake websites"},
+        {q:"Main goal of phishing?",a:["Credentials theft","Speed up PC","Firewall bypass"],c:"Credentials theft"}
+      ],
+
+      /* Malware questions */
+      malware: [
+        {q:"Malware means?",a:["Malicious software","Encrypted data","Backup system"],c:"Malicious software"},
+        {q:"Ransomware does?",a:["Encrypts data for money","Boosts CPU","Updates OS"],c:"Encrypts data for money"},
+        {q:"Trojan acts as?",a:["Legit program","Firewall","Password manager"],c:"Legit program"},
+        {q:"Virus spreads via?",a:["Infected files","Switches","Firewalls"],c:"Infected files"},
+        {q:"Worm differs because?",a:["Self-replicates","Needs human action","Is harmless"],c:"Self-replicates"},
+        {q:"Spyware does?",a:["Steals data silently","Protects system","Deletes logs"],c:"Steals data silently"},
+        {q:"Rootkit hides?",a:["Malicious access","User passwords","Updates"],c:"Malicious access"},
+        {q:"Keylogger records?",a:["Keystrokes","Camera","Network"],c:"Keystrokes"},
+        {q:"Best protection?",a:["Antivirus","Ignoring alerts","Disabling updates"],c:"Antivirus"},
+        {q:"Signs of malware?",a:["Slow PC","New hardware","Better performance"],c:"Slow PC"}
+      ],
+/* network questions */
+      network: [
+        {q:"Firewall function?",a:["Block unauthorized access","Boost CPU","Encrypt files"],c:"Block unauthorized access"},
+        {q:"VPN provides?",a:["Secure connection","Faster speed","Free Wi-Fi"],c:"Secure connection"},
+        {q:"IDS detects?",a:["Intrusions","Emails","Hardware"],c:"Intrusions"},
+        {q:"IPS does?",a:["Blocks attacks","Stores data","Encrypts passwords"],c:"Blocks attacks"},
+        {q:"SSH used for?",a:["Secure remote login","File compression","Malware scan"],c:"Secure remote login"},
+        {q:"Network layer 3?",a:["IP routing","File access","User login"],c:"IP routing"},
+        {q:"Common port for HTTP?",a:["80","22","443"],c:"80"},
+        {q:"HTTPS port?",a:["443","21","8080"],c:"443"},
+        {q:"ARP used for?",a:["IP to MAC mapping","DNS","Ping"],c:"IP to MAC mapping"},
+        {q:"Ping command checks?",a:["Connectivity","CPU","RAM"],c:"Connectivity"}
+      ],
+/* passwords questions */
+
+      passwords: [
+        {q:"Strong password should have?",a:["Mix of chars","Simple word","Birthdate"],c:"Mix of chars"},
+        {q:"Length recommended?",a:["12+","5","6"],c:"12+"},
+        {q:"Never share passwords?",a:["With anyone","With friends","Online"],c:"With anyone"},
+        {q:"Password managers?",a:["Encrypt & store","Publicly post","Guess"],c:"Encrypt & store"},
+        {q:"Avoid using?",a:["Common words","Symbols","Numbers"],c:"Common words"},
+        {q:"2FA stands for?",a:["Two Factor Authentication","Two File Access","Free Account"],c:"Two Factor Authentication"},
+        {q:"Breach means?",a:["Data leak","Backup","Update"],c:"Data leak"},
+        {q:"HIBP checks?",a:["Leaked passwords","Firewall logs","Network speed"],c:"Leaked passwords"},
+        {q:"Never reuse password for?",a:["Multiple accounts","Games","Notes"],c:"Multiple accounts"},
+        {q:"Good habit?",a:["Regularly change password","Ignore alerts","Use same password"],c:"Regularly change password"}
+      ]
+    };
+
+
+    
+    let currentCategory = "", currentQuestion = 0, userAnswers = [];
+
+   
+    function startQuiz(cat) {
+      currentCategory = cat;
+      document.getElementById("category-section").style.display = "none"; 
+      document.getElementById("quiz-title").textContent = "Quiz: " + cat.toUpperCase(); 
+      document.getElementById("quiz-container").style.display = "block"; 
+
+      currentQuestion = 0;
+      userAnswers = [];
+      showQuestion(); 
+    }
+
+    
+    function showQuestion() {
+      const q = quizzes[currentCategory][currentQuestion];
+      document.getElementById('question').textContent = q.q;
+
+      const answersDiv = document.getElementById('answers');
+      answersDiv.innerHTML = '';
+
+     
+      q.a.forEach(ans => {
+        const btn = document.createElement('button');
+        btn.textContent = ans;
+        btn.onclick = () => selectAnswer(ans); 
+        answersDiv.appendChild(btn);
+      });
+
+      
+      document.getElementById('nextBtn').style.display = 'none';
+
+    
+      document.getElementById('backBtn').style.display = currentQuestion > 0 ? 'inline-block' : 'none';
+    }
+
+    
+    function selectAnswer(ans) {
+      userAnswers[currentQuestion] = {
+        q: quizzes[currentCategory][currentQuestion].q,
+        a: ans,
+        c: quizzes[currentCategory][currentQuestion].c
+      };
+
+      
+      document.getElementById('nextBtn').style.display = 'inline-block';
+    }
+
+    
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizzes[currentCategory].length) showQuestion();
+      else showScore(); 
+    }
+
+  
+    function previousQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion();
+      }
+    }
+
+   
+    function showScore() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = `<h3>Quiz Results</h3>`;
+
+      let wrongCount = 0;
+
+      
+      userAnswers.forEach(ua => {
+        if (ua.a !== ua.c) {
+          wrongCount++;
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <b>Q:</b> ${ua.q}<br>
+            <span class="wrong">Your answer: ${ua.a}</span><br>
+            <span class="correct">Correct answer: ${ua.c}</span>
+          `;
+          div.style.marginBottom = "12px";
+          container.appendChild(div);
+        }
+      });
+
+    
+      const score = quizzes[currentCategory].length - wrongCount;
+      const percent = Math.round((score / quizzes[currentCategory].length) * 100);
+
+      container.innerHTML += `<h3>Your Score: ${score} / ${quizzes[currentCategory].length} (${percent}%)</h3>`;
+
+      
+      const bar = document.createElement('div');
+      bar.className = 'progress-container';
+
+      const fill = document.createElement('div');
+      fill.className = 'progress-bar';
+      fill.style.width = percent + '%';
+      fill.style.background = percent >= 90 ? '#2ecc71'
+        : percent >= 70 ? '#f1c40f'
+        : '#e74c3c';
+      fill.textContent = percent + '%';
+
+      bar.appendChild(fill);
+      container.appendChild(bar);
+    }
+  </script>
+
+  <footer>
+    © 2025 CAH — All Rights Reserved.
+  </footer>
+  
+</body>
+</html>

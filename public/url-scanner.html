@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL Scanner | Cyber Awareness Hub</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- No extra CSS here (page uses the global styling from style.css) -->
+</head>
+
+<body>
+
+  <!-- Top navigation bar for the website -->
+  <nav>
+    <h1>Cyber Awareness Hub</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="password-tools.html">Password Tools</a></li>
+      <li><a href="encryption.html" >Encryption Tool</a></li>
+      <li><a href="url-scanner.html" class="active">URL Scanner</a></li>
+      <li><a href="ids.html">IDS</a></li>
+      <li><a href="social-engineering.html">Social Engineering</a></li>
+      <li><a href="phishing-awareness.html">Phishing Awareness</a></li>
+      <li><a href="quiz.html">Cyber Quiz</a></li>
+      <li><a href="tips.html">Tips</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <section class="content">
+
+      <h2>Check and Analyze URL Safety</h2>
+      <p>Analyze website safety locally or via VirusTotal API.</p>
+
+      <!-- Simple URL input box -->
+      <div class="url-box">
+        <!-- Placeholder: that little link emoji just makes it look friendly -->
+        <input type="url" id="urlInput" placeholder="🔗 Enter a URL..." />
+      </div>
+
+      <!-- Action buttons: local scan & VirusTotal scan -->
+      <div class="controls">
+        <button id="localCheck">Quick Local Check</button>
+        <button id="vtCheck">Best Check</button>
+      </div>
+
+      <!-- Where results will show up -->
+      <p id="result"></p>
+
+    </section>
+  </main>
+
+
+  <script>
+    // Small helper to safely extract hostname from a URL
+    // Just to avoid breaking if the user types weird stuff
+    function extractHost(u){
+      try{ 
+        return new URL(u).hostname;
+      }catch(e){
+        return u; 
+      }
+    }
+
+    // Helper to update the result area easily
+    function setResult(html){ 
+      document.getElementById('result').innerHTML = html; 
+    }
+
+
+    // ---------------- LOCAL CHECK (simple pattern-based scan) ----------------
+    document.getElementById('localCheck').onclick = () => {
+
+      const u = document.getElementById('urlInput').value.trim();
+      if(!u) return setResult("Please enter a URL.");
+
+      const host = extractHost(u);
+      const warnings = [];
+
+      // Checking if URL uses HTTPS (most safe sites do)
+      if (!/^https:\/\//i.test(u)) warnings.push("No HTTPS detected.");
+
+      // Checking if user is entering a raw IP address — sketchy behavior
+      if (host.match(/\d+\.\d+\.\d+\.\d+/)) warnings.push("Direct IP instead of domain.");
+
+      // Checking for common phishing patterns
+      if (/(paypal|bank|login|verify)/i.test(host)) warnings.push("Phishing-like domain.");
+
+      // Output the result
+      setResult(
+        warnings.length
+          ? "<strong style='color:red'>⚠ Suspicious</strong><ul>" +
+              warnings.map(w=>`<li>${w}</li>`).join("") +
+            "</ul>"
+          : "<strong style='color:#00ff84'>✔ Clean locally.</strong>"
+      );
+    };
+
+
+    // ---------------- VIRUSTOTAL CHECK (server-side API call) ----------------
+    document.getElementById('vtCheck').onclick = async () => {
+
+      const url = document.getElementById("urlInput").value.trim();
+      if (!url) return setResult("Please enter a URL.");
+
+      // Showing a quick loading message
+      setResult("🔍 Scanning with VirusTotal...");
+
+      try {
+        // Calling our backend route that handles VirusTotal API requests
+        const resp = await fetch("/api/scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url })
+        });
+
+        const data = await resp.json();
+
+        // If server returned an error -> show it
+        if (!resp.ok) return setResult("❌ Error: " + data.error);
+
+        // Extracting key detection statistics
+        const stats = data?.data?.attributes?.stats || {};
+        const { malicious=0, suspicious=0, harmless=0, undetected=0 } = stats;
+
+        // Picking a summary message based on detection count
+        let msg = (malicious + suspicious > 0)
+          ? "<strong style='color:red'>🚨 Malicious detected</strong>"
+          : "<strong style='color:#00ff84'>✔ Clean (VirusTotal)</strong>";
+
+        // Final output formatting
+        setResult(`
+          ${msg}<br><br>
+          Malicious: ${malicious}<br>
+          Suspicious: ${suspicious}<br>
+          Harmless: ${harmless}<br>
+          Undetected: ${undetected}
+        `);
+
+      } catch (err) {
+        // Any client-side or fetch issue shows here
+        setResult("❌ Error: " + err.message);
+      }
+    };
+  </script>
+
+
+  <footer>
+    © 2025 CAH — All Rights Reserved.
+  </footer>
+
+</body>
+</html>

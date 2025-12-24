@@ -1,0 +1,408 @@
+<!-- Social Engineering page: shows real-world scams & how people fall for them -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Engineering Awareness | Cyber Awareness Hub</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* Main wrapper for scenarios */
+    .se-section {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Attack scenario block */
+    .fake-scenario {
+      background: rgba(255,255,255,0.04);
+      border-left: 5px solid var(--accent);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+    .fake-scenario:hover { transform: translateY(-4px); }
+
+    .fake-scenario strong { color: var(--accent); }
+    .fake-scenario p { margin-bottom: 6px; color: var(--text); }
+
+    /* Buttons under each scenario */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.25s, transform 0.1s;
+    }
+    .button:hover { background: var(--primary); transform: translateY(-2px); }
+
+    .button.secondary { background: var(--primary); }
+    .button.secondary:hover { background: var(--accent); }
+
+    .alert-box {
+      margin-top: 1.2rem;
+      background: #1a2333;
+      border-left: 5px solid var(--accent);
+      border-radius: 10px;
+      padding: 1rem;
+      color: var(--muted);
+      display: none;
+    }
+
+    .tips-box {
+      background: #121a2f;
+      padding: 1.2rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .tips-box h3 {
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    /* Chat-style message bubbles */
+    .scenario-chat {
+      background: rgba(255,255,255,0.02);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1.2rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      margin: 6px 0;
+      max-width: 80%;
+    }
+
+    .msg.attacker {
+      background: rgba(255,0,0,0.1);
+      border-left: 4px solid var(--accent);
+      align-self: flex-start;
+    }
+
+    .msg.user {
+      background: rgba(111,53,247,0.15);
+      border-left: 4px solid var(--primary);
+      align-self: flex-end;
+      margin-left: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <h1>Cyber Awareness Hub</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="password-tools.html">Password Tools</a></li>
+      <li><a href="encryption.html" >Encryption Tool</a></li>
+      <li><a href="url-scanner.html">URL Scanner</a></li>
+      <li><a href="ids.html">IDS</a></li>
+      <li><a class="active" href="social-engineering.html">Social Engineering</a></li>
+      <li><a href="phishing-awareness.html">Phishing Awareness</a></li>
+      <li><a href="quiz.html">Cyber Quiz</a></li>
+      <li><a href="tips.html">Tips</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <section class="content">
+      <h2>Social Engineering: The Human Hack</h2>
+
+      <p class="lead">
+        Social engineering exploits human trust.
+        Instead of hacking systems, attackers hack people.
+        Here are some real-life traps to test yourself 👇
+      </p>
+
+      <div class="se-section">
+
+        <!-- Scenario 1 -->
+        <div class="fake-scenario">
+          <h3>Scenario 1: “IT Support” Calls You</h3>
+
+          <div class="scenario-chat">
+            <div class="msg attacker"><strong>Attacker:</strong> Hi, this is IT support. We noticed login issues on your account. Can you share your employee ID and reset code?</div>
+            <div class="msg user"><strong>You:</strong> Okay, let me check...</div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario1')">I shared the info</button>
+            <button class="button secondary" onclick="showSpotTips('scenario1')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario1" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 2 -->
+        <div class="fake-scenario">
+          <h3>Scenario 2: Fake Bank Alert Email</h3>
+          <p><strong>From:</strong> bank-security@secureupdate.com</p>
+          <p>We detected unusual activity. Click below to verify.</p>
+
+          <a href="#" class="muted">secure-bank-update.com</a>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario2')">I clicked the link</button>
+            <button class="button secondary" onclick="showSpotTips('scenario2')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario2" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 3 -->
+        <div class="fake-scenario">
+          <h3>Scenario 3: “I sent the code to you by mistake!”</h3>
+
+          <div class="scenario-chat">
+            <div class="msg attacker"><strong>Attacker:</strong> Brooo I mistakenly sent my Facebook recovery code to your number. Please send it to me!</div>
+            <div class="msg user"><strong>You:</strong> Wait what?</div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario3')">I sent the code</button>
+            <button class="button secondary" onclick="showSpotTips('scenario3')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario3" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 4 -->
+        <div class="fake-scenario">
+          <h3>Scenario 4: “You won an iPhone 15”</h3>
+          <p>Congratulations! You won a free iPhone.</p>
+          <a href="#" class="muted">free-iphone-gift-event.net</a>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario4')">I clicked the link</button>
+            <button class="button secondary" onclick="showSpotTips('scenario4')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario4" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 5 -->
+        <div class="fake-scenario">
+          <h3>Scenario 5: Fake Facebook Security Update</h3>
+          <p>Your account was restricted. Log in to verify.</p>
+          <a href="#" class="muted">meta-security-check.com</a>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario5')">I logged in</button>
+            <button class="button secondary" onclick="showSpotTips('scenario5')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario5" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 6 -->
+        <div class="fake-scenario">
+          <h3>Scenario 6: Delivery Scam “Small Fee Required”</h3>
+          <p>Your shipment is waiting. Pay $3.50 to release the package.</p>
+          <a href="#" class="muted">post-service-fee-pay.com</a>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario6')">I paid the fee</button>
+            <button class="button secondary" onclick="showSpotTips('scenario6')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario6" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 7 -->
+        <div class="fake-scenario">
+          <h3>Scenario 7: PayPal / Stripe Verification Scam</h3>
+          <p>Your PayPal is limited. Verify your identity now:</p>
+          <a href="#" class="muted">paypal-verify-center.com</a>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario7')">I entered info</button>
+            <button class="button secondary" onclick="showSpotTips('scenario7')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario7" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 8 -->
+        <div class="fake-scenario">
+          <h3>Scenario 8: USB Drive on the Floor (Baiting)</h3>
+          <p>You find a USB labeled “Salary Data 2025”. You plug it in.</p>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario8')">I plugged it</button>
+            <button class="button secondary" onclick="showSpotTips('scenario8')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario8" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 9 -->
+        <div class="fake-scenario">
+          <h3>Scenario 9: Fake Survey Reward</h3>
+          <p>Fill this survey and win a $100 gift card.</p>
+
+          <a href="#" class="muted">survey-reward-giftcard.net</a>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario9')">I filled it</button>
+            <button class="button secondary" onclick="showSpotTips('scenario9')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario9" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 10 -->
+        <div class="fake-scenario">
+          <h3>Scenario 10: CEO Fraud (Urgent Payment Request)</h3>
+
+          <div class="scenario-chat">
+            <div class="msg attacker"><strong>CEO:</strong> I need you to wire $5,000 ASAP. No time to ask questions!</div>
+            <div class="msg user"><strong>You:</strong> Should I confirm with finance?</div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario10')">I sent the money</button>
+            <button class="button secondary" onclick="showSpotTips('scenario10')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario10" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 11 -->
+        <div class="fake-scenario">
+          <h3>Scenario 11: Free Public Wi-Fi</h3>
+          <p>You connect to “FREE-Airport-WiFi”. It’s actually malicious.</p>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario11')">I connected</button>
+            <button class="button secondary" onclick="showSpotTips('scenario11')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario11" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 12 -->
+        <div class="fake-scenario">
+          <h3>Scenario 12: Fake QR Code</h3>
+          <p>You scan a QR code at a café. It leads to a login page.</p>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario12')">I scanned it</button>
+            <button class="button secondary" onclick="showSpotTips('scenario12')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario12" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 13 -->
+        <div class="fake-scenario">
+          <h3>Scenario 13: Fake Job Interview</h3>
+          <p>You are asked to install a “meeting tool” that is malware.</p>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario13')">I installed it</button>
+            <button class="button secondary" onclick="showSpotTips('scenario13')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario13" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 14 -->
+        <div class="fake-scenario">
+          <h3>Scenario 14: Fake Internship Offer</h3>
+          <p>You are asked to pay “registration fees”.</p>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario14')">I paid</button>
+            <button class="button secondary" onclick="showSpotTips('scenario14')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario14" class="alert-box"></div>
+        </div>
+
+        <!-- Scenario 15 -->
+        <div class="fake-scenario">
+          <h3>Scenario 15: Fake Company Invoice</h3>
+          <p>A supplier sends you a PDF with a changed bank account.</p>
+
+          <div class="action-buttons">
+            <button class="button" onclick="clickedTrap('scenario15')">I processed payment</button>
+            <button class="button secondary" onclick="showSpotTips('scenario15')">How to spot it</button>
+          </div>
+
+          <div id="alert-scenario15" class="alert-box"></div>
+        </div>
+
+      </div>
+
+      <div class="tips-box">
+        <h3>🧠 Key Social Engineering Techniques</h3>
+        <ul>
+          <li><b>Phishing:</b> Fake emails or messages.</li>
+          <li><b>Pretexting:</b> Pretending to be someone legitimate.</li>
+          <li><b>Baiting:</b> Using infected USB drives.</li>
+          <li><b>Tailgating:</b> Entering restricted areas behind others.</li>
+          <li><b>Vishing:</b> Voice phishing calls.</li>
+        </ul>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    function clickedTrap(id) {
+      const box = document.getElementById('alert-' + id);
+
+      box.style.display = 'block';
+      box.innerHTML = `
+        <strong>⚠️ Oops! You fell for it.</strong>
+        <p>Attackers rely on trust and urgency to make you respond quickly.</p>
+        <ul>
+          <li>Never share codes or passwords.</li>
+          <li>Always verify identity through official channels.</li>
+        </ul>
+      `;
+      window.scrollTo({ top: box.offsetTop - 100, behavior: 'smooth' });
+    }
+
+    function showSpotTips(id) {
+      const box = document.getElementById('alert-' + id);
+
+      box.style.display = 'block';
+      box.innerHTML = `
+        <strong>How to spot this attack:</strong>
+        <ul>
+          <li>Check sender domains carefully.</li>
+          <li>Never act on urgency without verifying.</li>
+          <li>Legitimate support never asks for passwords or codes.</li>
+        </ul>
+      `;
+      window.scrollTo({ top: box.offsetTop - 100, behavior: 'smooth' });
+    }
+  </script>
+
+  <footer>
+    © 2025 CAH — All Rights Reserved.
+  </footer>
+
+</body>
+</html>

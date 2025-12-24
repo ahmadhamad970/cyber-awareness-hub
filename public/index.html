@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Awareness Hub — Home</title>
+
+  <!-- Main website stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Roboto font for clean UI look -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* 
+      ===== HOME PAGE OVERRIDES =====
+      These styles affect ONLY the home page,
+      not the rest of the website.
+    */
+
+    /* Main big title style */
+    .content h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, #ff0000, #9b47ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    /* Subtitle under the big title */
+    .content p {
+      text-align: center;
+      max-width: 650px;
+      margin: 0.5rem auto 2rem auto;
+      color: #cccccc;
+      font-size: 1.1rem;
+    }
+
+    /* Responsive grid for the cards */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.7rem;
+      margin-top: 2rem;
+      padding: 0 10px;
+      
+    }
+
+    /* 
+      ===== FEATURE CARDS =====
+      These are the animated cyber cards on the homepage.
+    */
+
+    .feature-card {
+      position: relative;
+      background: rgba(20, 22, 35, 0.83);
+      padding: 2rem;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.45s ease;
+
+      /* Animation start state */
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+
+      /* Soft neon glow */
+      box-shadow: 0 0 0px rgba(111, 53, 247, 0.2);
+    }
+
+    /* Card when it enters screen */
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      box-shadow: 0 0 22px rgba(111, 53, 247, 0.25);
+    }
+
+    /* Hover effect — makes it pop */
+    .feature-card:hover {
+      transform: translateY(-10px) scale(1.05);
+      border-color: rgba(255, 0, 0, 0.4);
+      box-shadow:
+        0 0 18px rgba(255, 0, 0, 0.45),
+        0 0 30px rgba(111, 53, 247, 0.35);
+    }
+
+    /* Card title styling */
+    .feature-card h3 {
+      font-size: 1.4rem;
+      color: #ff4d4d;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* This pulls the emoji from data-icon attribute */
+    .feature-card h3::before {
+      content: attr(data-icon);
+      font-size: 1.5rem;
+    }
+
+    /* Descriptions inside each card */
+    .feature-card p {
+      color: #d0d0d0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Footer design */
+    footer {
+      margin-top: 3rem;
+      padding: 1rem;
+      background: var(--primary);
+      text-align: center;
+      border-radius: 10px 10px 0 0;
+      color: #eee;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation bar at top of the website -->
+  <nav>
+    <h1>Cyber Awareness Hub</h1>
+
+    <!-- Main page links -->
+    <ul>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="password-tools.html">Password Tools</a></li>
+      <li><a href="encryption.html">Encryption Tool</a></li>
+      <li><a href="url-scanner.html">URL Scanner</a></li>
+      <li><a href="ids.html">IDS</a></li>
+      <li><a href="social-engineering.html">Social Engineering</a></li>
+      <li><a href="phishing-awareness.html">Phishing Awareness</a></li>
+      <li><a href="quiz.html">Cyber Quiz</a></li>
+      <li><a href="tips.html">Tips</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main home page content -->
+  <section class="content">
+
+    <!-- Big welcoming title -->
+    <h2>Welcome to the Cyber Awareness Hub 🛡️</h2>
+
+    <!-- Description text under the title -->
+    <p>Your all-in-one cybersecurity toolkit — learn, analyze, protect, and defend.</p>
+
+    <!-- Feature cards grid -->
+    <div class="features">
+
+      <!-- Each card represents a feature in your platform -->
+      <div class="feature-card" data-icon="🔒">
+        <h3>Password Checker</h3>
+        <p>Measure your password strength with real-time analysis.</p>
+      </div>
+
+      <div class="feature-card" data-icon="🛡️">
+        <h3>Encryption Tool</h3>
+        <p>Encrypt & decrypt messages using AES, XOR, Base64 & more.</p>
+      </div>
+
+      <div class="feature-card" data-icon="🌐">
+        <h3>URL Scanner</h3>
+        <p>Analyze URLs with local checks + VirusTotal scan.</p>
+      </div>
+
+      <div class="feature-card" data-icon="🚨">
+        <h3>IDS System</h3>
+        <p>Monitor attacks & suspicious activity instantly.</p>
+      </div>
+
+      <div class="feature-card" data-icon="🕵️">
+        <h3>Social Engineering</h3>
+        <p>Learn attacker manipulation techniques.</p>
+      </div>
+
+      <div class="feature-card" data-icon="🎣">
+        <h3>Phishing Awareness</h3>
+        <p>Learn how to identify fake emails & scam links.</p>
+      </div>
+
+      <div class="feature-card" data-icon="🧠">
+        <h3>Cyber Quiz</h3>
+        <p>Test your knowledge with interactive questions.</p>
+      </div>
+
+      <div class="feature-card" data-icon="💡">
+        <h3>Cyber Tips</h3>
+        <p>Daily tips to enhance your cyber hygiene.</p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- Small script for scroll animations -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      // Select all feature cards on the page
+      const cards = document.querySelectorAll(".feature-card");
+
+      /* 
+         IntersectionObserver:
+         Checks when cards enter the visible screen area
+         and adds the "visible" class to animate them.
+      */
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add("visible");
+        });
+      }, { threshold: 0.15 }); // card becomes visible when 15% appears
+
+      // Delay each card slightly to create a stagger animation
+      cards.forEach((card, i) => {
+        setTimeout(() => {
+          observer.observe(card);
+        }, i * 120);
+      });
+    });
+  </script>
+
+  <!-- Footer at bottom of page -->
+  <footer>
+    © 2025 CAH — All Rights Reserved.
+  </footer>
+
+</body>
+</html>

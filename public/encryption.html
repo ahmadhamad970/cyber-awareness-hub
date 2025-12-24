@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Encryption Tool | Cyber Awareness Hub</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- CryptoJS for AES/DES/3DES/XO-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+  <style>
+    .showPassBox {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .showPassBox input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .showPassBox label {
+      font-size: 0.95rem;
+      color: #ddd;
+      cursor: pointer;
+    }
+    #output {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 15px;
+
+  
+  white-space: pre-wrap;   
+  word-wrap: break-word;   
+  overflow-wrap: break-word;
+
+  max-width: 100%;
+  width: 100%;
+  min-height: 60px;
+  font-size: 1rem;
+  color: #eee;
+
+  
+  display: block;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <h1>Cyber Awareness Hub</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="password-tools.html">Password Tools</a></li>
+      <li><a class="active" href="encryption.html">Encryption Tool</a></li>
+      <li><a href="url-scanner.html">URL Scanner</a></li>
+      <li><a href="ids.html">IDS</a></li>
+      <li><a href="social-engineering.html">Social Engineering</a></li>
+      <li><a href="phishing-awareness.html">Phishing Awareness</a></li>
+      <li><a href="quiz.html">Cyber Quiz</a></li>
+      <li><a href="tips.html">Tips</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <section class="content">
+
+      <h2>🔐 Encryption & Decryption Tool</h2>
+      <p>Try different encryption algorithms with your own key.</p>
+
+      <div class="enc-box">
+        <label>Enter Text:</label>
+        <textarea id="textInput" rows="4" placeholder="Write your message..."></textarea>
+      </div>
+
+      <div class="enc-box">
+        <label>Select Encryption Type:</label>
+        <select id="encType">
+          <option value="aes">AES-256 Encryption</option>
+          <option value="des">DES Encryption</option>
+          <option value="3des">3DES (Triple DES) Encryption</option>
+          <option value="base64">Base64 Encryption</option>
+          <option value="rot13">ROT13 Encryption</option>
+          <option value="caesar">Caesar Cipher Encryption</option>
+          <option value="xor">XOR Encryption</option>
+          <option value="rsa">RSA Encryption</option>
+          <option value="ecc">ECC Encryption</option>
+        </select>
+      </div>
+
+      <div class="enc-box">
+        <label>Password / Key:</label>
+        <input type="password" id="password" placeholder="Enter encryption key..." />
+        <div class="showPassBox">
+          <input type="checkbox" id="showPassCheck" onclick="togglePassword()" />
+          <label for="showPassCheck">Show password</label>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button onclick="encryptText()">Encrypt</button>
+        <button onclick="decryptText()">Decrypt</button>
+        <button onclick="copyOutput()">Copy Result</button>
+      </div>
+
+      <div id="output"></div>
+
+    </section>
+  </main>
+
+  <script>
+    /* ===================== RSA (WebCrypto) ===================== */
+
+    let rsaKeyPair = null;
+    let rsaReady = false;
+    let rsaSessionPass = null; // password user used for this RSA session
+
+    async function initRSA() {
+      try {
+        rsaKeyPair = await crypto.subtle.generateKey(
+          {
+            name: "RSA-OAEP",
+            modulusLength: 2048,
+            publicExponent: new Uint8Array([1, 0, 1]),
+            hash: "SHA-256"
+          },
+          true,
+          ["encrypt", "decrypt"]
+        );
+        rsaReady = true;
+      } catch (e) {
+        console.error("RSA init error:", e);
+      }
+    }
+
+    async function rsaEncrypt(text) {
+      if (!rsaReady) return "❌ RSA not ready.";
+
+      const encoder = new TextEncoder();
+      const encoded = encoder.encode(text);
+
+      const encrypted = await crypto.subtle.encrypt(
+        { name: "RSA-OAEP" },
+        rsaKeyPair.publicKey,
+        encoded
+      );
+
+      return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+    }
+
+    async function rsaDecrypt(cipher) {
+      if (!rsaReady) return "❌ RSA not ready.";
+      try {
+        const data = Uint8Array.from(atob(cipher), c => c.charCodeAt(0));
+        const decrypted = await crypto.subtle.decrypt(
+          { name: "RSA-OAEP" },
+          rsaKeyPair.privateKey,
+          data
+        );
+        return new TextDecoder().decode(decrypted);
+      } catch (e) {
+        console.error("RSA decrypt error:", e);
+        return "❌ RSA decryption failed.";
+      }
+    }
+
+    /* ===================== ECC (ECDH + AES-GCM) ===================== */
+
+    let eccKeyPair = null;
+    let eccAESKey = null;
+    let eccReady = false;
+    let eccSessionPass = null; // password for ECC session
+
+    async function initECC() {
+      try {
+        eccKeyPair = await crypto.subtle.generateKey(
+          { name: "ECDH", namedCurve: "P-256" },
+          true,
+          ["deriveKey", "deriveBits"]
+        );
+
+        eccAESKey = await crypto.subtle.deriveKey(
+          {
+            name: "ECDH",
+            public: eccKeyPair.publicKey
+          },
+          eccKeyPair.privateKey,
+          {
+            name: "AES-GCM",
+            length: 256
+          },
+          true,
+          ["encrypt", "decrypt"]
+        );
+
+        eccReady = true;
+      } catch (e) {
+        console.error("ECC init error:", e);
+      }
+    }
+
+    async function eccEncrypt(text) {
+      if (!eccReady) return "❌ ECC not ready.";
+
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+
+      const encrypted = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        eccAESKey,
+        data
+      );
+
+      const buff = new Uint8Array(iv.byteLength + encrypted.byteLength);
+      buff.set(iv, 0);
+      buff.set(new Uint8Array(encrypted), iv.byteLength);
+
+      return btoa(String.fromCharCode(...buff));
+    }
+
+    async function eccDecrypt(cipher) {
+      if (!eccReady) return "❌ ECC not ready.";
+
+      try {
+        const raw = Uint8Array.from(atob(cipher), c => c.charCodeAt(0));
+        const iv = raw.slice(0, 12);
+        const data = raw.slice(12);
+
+        const decrypted = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv },
+          eccAESKey,
+          data
+        );
+
+        return new TextDecoder().decode(decrypted);
+      } catch (e) {
+        console.error("ECC decrypt error:", e);
+        return "❌ ECC decryption failed.";
+      }
+    }
+
+    /* ===================== UI Helpers ===================== */
+
+    function togglePassword() {
+      const input = document.getElementById("password");
+      input.type = (input.type === "password") ? "text" : "password";
+    }
+
+    function copyOutput() {
+      const text = document.getElementById("output").innerText;
+      if (!text) return;
+      navigator.clipboard.writeText(text);
+      alert("Copied to clipboard!");
+    }
+
+    function show(msg) {
+      document.getElementById("output").innerText = msg;
+    }
+
+    /* ===================== Encrypt ===================== */
+
+    async function encryptText() {
+      const text = document.getElementById("textInput").value;
+      const type = document.getElementById("encType").value;
+      const key  = document.getElementById("password").value;
+
+      if (!text) return show("Enter text first.");
+
+      // symmetric algorithms that require a key
+      const symNeedsKey = ["aes", "des", "3des", "xor", "caesar"];
+
+      if (symNeedsKey.includes(type) && !key) {
+        return show("Enter a password/key.");
+      }
+
+      let encrypted = "";
+
+      switch (type) {
+        case "aes":
+          encrypted = CryptoJS.AES.encrypt(text, key).toString();
+          break;
+
+        case "des":
+          encrypted = CryptoJS.DES.encrypt(text, key).toString();
+          break;
+
+        case "3des":
+          encrypted = CryptoJS.TripleDES.encrypt(text, key).toString();
+          break;
+
+        case "base64":
+          encrypted = btoa(text);
+          break;
+
+        case "rot13":
+          encrypted = text.replace(/[a-zA-Z]/g, c =>
+            String.fromCharCode(
+              c.charCodeAt(0) + (c.toLowerCase() < 'n' ? 13 : -13)
+            ));
+          break;
+
+        case "caesar":
+          encrypted = text.split("").map(c =>
+            String.fromCharCode(c.charCodeAt(0) + 3)
+          ).join("");
+          break;
+
+        case "xor":
+          encrypted = text
+            .split("")
+            .map((char, i) =>
+              char.charCodeAt(0) ^ key.charCodeAt(i % key.length)
+            )
+            .join("-");
+          break;
+
+        case "rsa":
+          if (!key) return show("Enter a password/key for RSA session.");
+          if (rsaSessionPass && rsaSessionPass !== key) {
+            return show("❌ Wrong RSA password for this session.");
+          }
+          if (!rsaSessionPass) rsaSessionPass = key;
+          encrypted = await rsaEncrypt(text);
+          break;
+
+        case "ecc":
+          if (!key) return show("Enter a password/key for ECC session.");
+          if (eccSessionPass && eccSessionPass !== key) {
+            return show("❌ Wrong ECC password for this session.");
+          }
+          if (!eccSessionPass) eccSessionPass = key;
+          encrypted = await eccEncrypt(text);
+          break;
+      }
+
+      show(encrypted);
+    }
+
+    /* ===================== Decrypt ===================== */
+
+    async function decryptText() {
+      const text = document.getElementById("textInput").value;
+      const type = document.getElementById("encType").value;
+      const key  = document.getElementById("password").value;
+
+      if (!text) return show("Enter encrypted text first.");
+
+      const symNeedsKey = ["aes", "des", "3des", "xor", "caesar"];
+
+      if (symNeedsKey.includes(type) && !key) {
+        return show("Enter a password/key.");
+      }
+
+      let decrypted = "";
+
+      try {
+        switch (type) {
+          case "aes":
+            decrypted = CryptoJS.AES.decrypt(text, key).toString(CryptoJS.enc.Utf8);
+            break;
+
+          case "des":
+            decrypted = CryptoJS.DES.decrypt(text, key).toString(CryptoJS.enc.Utf8);
+            break;
+
+          case "3des":
+            decrypted = CryptoJS.TripleDES.decrypt(text, key).toString(CryptoJS.enc.Utf8);
+            break;
+
+          case "base64":
+            decrypted = atob(text);
+            break;
+
+          case "rot13":
+            decrypted = text.replace(/[a-zA-Z]/g, c =>
+              String.fromCharCode(
+                c.charCodeAt(0) + (c.toLowerCase() < 'n' ? 13 : -13)
+              ));
+            break;
+
+          case "caesar":
+            decrypted = text.split("").map(c =>
+              String.fromCharCode(c.charCodeAt(0) - 3)
+            ).join("");
+            break;
+
+          case "xor":
+            decrypted = text
+              .split("-")
+              .map((num, i) =>
+                String.fromCharCode(num ^ key.charCodeAt(i % key.length))
+              )
+              .join("");
+            break;
+
+          case "rsa":
+            if (!rsaSessionPass) {
+              return show("No RSA session initialized. Encrypt something first.");
+            }
+            if (key !== rsaSessionPass) {
+              return show("❌ Wrong RSA password.");
+            }
+            decrypted = await rsaDecrypt(text);
+            break;
+
+          case "ecc":
+            if (!eccSessionPass) {
+              return show("No ECC session initialized. Encrypt something first.");
+            }
+            if (key !== eccSessionPass) {
+              return show("❌ Wrong ECC password.");
+            }
+            decrypted = await eccDecrypt(text);
+            break;
+        }
+      } catch (e) {
+        console.error("Decrypt error:", e);
+        decrypted = "❌ Wrong password or corrupted data.";
+      }
+
+      if (!decrypted) decrypted = "❌ Wrong password or invalid data.";
+      show(decrypted);
+    }
+
+    /* ===================== Init on Load ===================== */
+
+    initRSA();
+    initECC();
+  </script>
+
+  <footer>
+    © 2025 CAH — All Rights Reserved.
+  </footer>
+
+</body>
+</html>

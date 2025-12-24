@@ -1,0 +1,226 @@
+<html>
+<!-- lil HTML boilerplate, nothing crazy -->
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- making sure it looks good on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Phishing Awareness | Cyber Awareness Hub</title>
+
+  <!-- main site CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* whole phishing section container */
+    .phish-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* fake email card style */
+    .fake-email {
+      background: rgba(255,255,255,0.05);
+      border-left: 5px solid var(--accent);
+      padding: 1.2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+
+    /* small hover lift */
+    .fake-email:hover { 
+      transform: translateY(-4px); 
+    }
+
+    /* bold fake email labels */
+    .fake-email strong {
+      color: var(--accent);
+      display: inline-block;
+      width: 100px;
+    }
+
+    .fake-email p {
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    /* button for "fake or real?" */
+    .phish-btn {
+      background: var(--accent);
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    /* hover animation */
+    .phish-btn:hover {
+      background: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* box that shows extra explanation */
+    .tip-box {
+      background: #1a2333;
+      padding: 1.2rem;
+      border-radius: 10px;
+      color: var(--muted);
+      border-left: 5px solid var(--primary);
+      margin-top: 1rem;
+    }
+
+    .tip-box h3 {
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .tips-list {
+      list-style: disc;
+      margin-left: 1.5rem;
+    }
+
+    /* quiz area at the bottom */
+    .quiz-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .quiz-box button {
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      margin: 0.5rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    /* hover color swap */
+    .quiz-box button:hover { 
+      background: var(--accent); 
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- main navbar -->
+  <nav>
+    <h1>Cyber Awareness Hub</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="password-tools.html">Password Tools</a></li>
+      <li><a href="encryption.html" >Encryption Tool</a></li>
+      <li><a href="url-scanner.html">URL Scanner</a></li>
+      <li><a href="ids.html">IDS</a></li>
+      <li><a href="social-engineering.html">Social Engineering</a></li>
+      <li><a href="phishing-awareness.html" class="active">Phishing Awareness</a></li>
+      <li><a href="quiz.html">Cyber Quiz</a></li>
+      <li><a href="tips.html">Tips</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <section class="content">
+
+      <!-- page title -->
+      <h2>Can You Spot a Phishing Attempt?</h2>
+
+      <!-- small intro -->
+      <p class="lead">
+        Phishing is one of the most common ways hackers steal information. They pretend to be trusted companies to trick you into revealing personal data.
+      </p>
+
+      <!-- all phishing examples -->
+      <div class="phish-section">
+
+        <!-- first fake email -->
+        <div class="fake-email">
+          <p><strong>From:</strong> support@paypall.com</p>
+          <p><strong>Subject:</strong> Urgent! Your account is locked. Click below to verify.</p>
+          <p><strong>Body:</strong> Dear user, your account has been temporarily suspended due to unusual activity. Please <a href="#">click here</a> to confirm your details immediately.</p>
+
+          <!-- button to reveal explanation -->
+          <button class="phish-btn" onclick="showTip('fake1')">Fake or Real?</button>
+
+          <!-- explanation box hidden by default -->
+          <div id="tip-fake1" class="tip-box" hidden>
+            <h3>⚠️ It's FAKE!</h3>
+            <ul class="tips-list">
+              <li>Check the sender’s address — it says <b>paypall.com</b> with two Ls instead of one.</li>
+              <li>Urgent language like “Your account is locked” is used to scare you.</li>
+              <li>Hover over links — they don’t lead to the official PayPal domain.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- second email (legit example) -->
+        <div class="fake-email">
+          <p><strong>From:</strong> security@google.com</p>
+          <p><strong>Subject:</strong> New sign-in detected</p>
+          <p><strong>Body:</strong> We noticed a login attempt from a new device. If this wasn’t you, <a href="#">review your account activity</a>.</p>
+
+          <button class="phish-btn" onclick="showTip('real1')">Fake or Real?</button>
+
+          <div id="tip-real1" class="tip-box" hidden>
+            <h3>✅ This one looks REAL!</h3>
+            <ul class="tips-list">
+              <li>The sender’s domain (<b>@google.com</b>) is legitimate.</li>
+              <li>No threats or urgent language used.</li>
+              <li>Links direct to verified Google URLs.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- general phishing safety tips -->
+      <div class="tip-box">
+        <h3>🧠 Quick Tips to Avoid Phishing</h3>
+        <ul class="tips-list">
+          <li>Always double-check the sender’s email domain.</li>
+          <li>Don’t click suspicious links or attachments.</li>
+          <li>Look for spelling errors and unusual requests.</li>
+          <li>Never share passwords or financial info via email.</li>
+          <li>Enable 2FA (Two-Factor Authentication) on your accounts.</li>
+        </ul>
+      </div>
+
+      <!-- quiz invitation -->
+      <div class="quiz-box">
+        <h3>Test Yourself!</h3>
+        <p>Think you can identify phishing emails? Try our short quiz and see how well you spot them.</p>
+        <button onclick="window.location.href='quiz.html'">Take the Quiz</button>
+      </div>
+
+    </section>
+  </main>
+
+
+  <script>
+    // Simple toggle: show/hide the explanation box
+    function showTip(id) {
+      const box = document.getElementById("tip-" + id);
+      box.hidden = !box.hidden;  // flip the visibility
+    }
+  </script>
+
+  <!-- footer -->
+  <footer>
+    © 2025 CAH — All Rights Reserved.
+  </footer>
+
+</body>
+</html>
