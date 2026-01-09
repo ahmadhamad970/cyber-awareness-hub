@@ -7,7 +7,7 @@ const API_CONFIG = {
   // For production - replace with your actual Render URL
   API_URL: window.location.hostname === 'localhost' 
     ? 'http://localhost:3000' 
-    : 'https://YOUR-RENDER-APP-NAME.onrender.com'
+    : 'https://cyber-awareness-hub.onrender.com'
 };
 
 // Helper function to make API calls
