@@ -13,6 +13,9 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- API Configuration -->
+  <script src="config.js"></script>
 </head>
 
 <body>
@@ -161,7 +164,7 @@ async function doScan() {
 
   try {
     // send request to backend
-    const r = await fetch("/ids-scan", {
+    const r = await fetch(getApiUrl("/ids-scan"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url: normalized })
@@ -189,7 +192,7 @@ async function doScan() {
 // ---------------- LOAD LAST 50 LOGS ----------------
 async function loadLast50() {
   // request last 50 logs
-  const r = await fetch("/alerts-api/last50");
+  const r = await fetch(getApiUrl("/alerts-api/last50"));
   const arr = await r.json();
 
   const tbody = document.querySelector("#last50 tbody");
@@ -258,7 +261,7 @@ el("clear-btn").onclick = async () => {
 
 // ---------------- REAL-TIME EVENTS (SSE) ----------------
 // listens for events from server and refreshes data
-const evt = new EventSource("/events");
+const evt = new EventSource(getApiUrl("/events"));
 evt.onmessage = () => {
   if (!scanningNow) {
     loadLast50();
@@ -269,7 +272,7 @@ evt.onmessage = () => {
 // ---------------- SIMULATED ATTACK ----------------
 el("simulate-attack").onclick = async () => {
   // create a fake attack 
-  await fetch("/log-attack", {
+  await fetch(getApiUrl("/log-attack"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

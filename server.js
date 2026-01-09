@@ -34,6 +34,15 @@ const httpsAgent = new https.Agent({
 
 /* ------------------------- Helpers ---------------------------- */
 
+// Health check endpoint for Render
+app.get("/", (req, res) => {
+  res.json({ 
+    status: "ok", 
+    service: "Cyber Awareness Hub API",
+    timestamp: new Date().toISOString()
+  });
+});
+
 function readAlerts() {
   try {
     return JSON.parse(fs.readFileSync(ALERTS_FILE, "utf8") || "[]");

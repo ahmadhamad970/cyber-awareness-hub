@@ -1,0 +1,25 @@
+[build]
+  # Directory that contains the built assets (publish directory)
+  publish = "public"
+  
+  # Build command (not needed for static HTML, but can be used if you add a build step)
+  command = "echo 'No build step needed for static HTML'"
+
+[[redirects]]
+  # SPA fallback for client-side routing (if needed)
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  # Node version (if needed for any build tools)
+  NODE_VERSION = "18"
+
+[[headers]]
+  # Apply security headers to all pages
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"

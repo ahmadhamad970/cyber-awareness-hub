@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>URL Scanner | Cyber Awareness Hub</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
 
   <!-- No extra CSS here (page uses the global styling from style.css) -->
 </head>
@@ -109,7 +110,7 @@
 
       try {
         // Calling our backend route that handles VirusTotal API requests
-        const resp = await fetch("/api/scan", {
+        const resp = await fetch(getApiUrl("/api/scan"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url })
