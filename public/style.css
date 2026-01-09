@@ -64,6 +64,7 @@ nav {
   z-index: 1000;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   border-radius: 0 0 10px 10px;
+  flex-wrap: wrap;
 }
 
 nav h1 {
@@ -73,12 +74,18 @@ nav h1 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 8px rgba(255,0,0,0.25);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 nav ul {
   list-style: none;
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 nav ul li a {
@@ -134,6 +141,8 @@ select {
   color: var(--text);
   font-size: 1rem;
   margin-top: 5px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 input:focus,
@@ -141,6 +150,8 @@ textarea:focus,
 select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 12px rgba(255,0,0,0.4);
+  outline: none;
+}
 }
 
 /* ===================== BUTTONS ===================== */
@@ -148,6 +159,7 @@ select:focus {
   margin-top: 15px;
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
 .controls button {
@@ -159,6 +171,9 @@ select:focus {
   color: #ff0000;
   cursor: pointer;
   transition: 0.25s;
+  flex: 1;
+  min-width: 120px;
+  white-space: nowrap;
 }
 
 .controls button:hover {
@@ -190,10 +205,289 @@ footer {
   color: #fff;
 }
 
+/* ===================== TABLES ===================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  background: rgba(111, 53, 247, 0.2);
+  font-weight: 700;
+  color: var(--text);
+}
+
+tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Table wrapper for horizontal scroll on mobile */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1rem 0;
+}
+
 /* ===================== RESPONSIVE ===================== */
+
+/* Mobile First Approach - Tablets & Smaller Laptops */
+@media (max-width: 1024px) {
+  nav h1 {
+    font-size: 1.3rem;
+  }
+  
+  nav ul {
+    gap: 0.8rem;
+  }
+  
+  nav ul li a {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .container {
+    padding: 1.5rem;
+  }
+  
+  .cards-wrapper {
+    gap: 25px;
+  }
+  
+  .pw-card {
+    width: 100%;
+    max-width: 420px;
+  }
+}
+
+/* Tablets Portrait */
 @media (max-width: 768px) {
-  nav ul { flex-direction: column; gap: .5rem; }
-  .content { margin: 1rem; padding: 1rem; }
+  nav {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+    border-radius: 0;
+  }
+  
+  nav h1 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  
+  nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  nav ul li a {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.7rem;
+  }
+  
+  .content {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .container {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+  
+  .cards-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .pw-card {
+    width: 100%;
+    padding: 1.5rem;
+  }
+  
+  .pw-card h2 {
+    font-size: 1.4rem;
+  }
+  
+  .two-btns {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .btn-red, .btn-outline {
+    width: 100%;
+    padding: 14px;
+  }
+  
+  /* IDS Dashboard responsive */
+  #ids-dashboard {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Tables responsive */
+  table {
+    font-size: 0.85rem;
+  }
+  
+  th, td {
+    padding: 8px 6px;
+  }
+}
+
+/* Mobile Phones */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+  
+  nav {
+    padding: 0.8rem;
+  }
+  
+  nav h1 {
+    font-size: 1rem;
+  }
+  
+  nav ul {
+    gap: 0.4rem;
+  }
+  
+  nav ul li a {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .content {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+  
+  .container {
+    padding: 0.8rem;
+    margin: 0.3rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.3rem;
+  }
+  
+  h3 {
+    font-size: 1.1rem;
+  }
+  
+  .pw-card {
+    padding: 1.2rem;
+  }
+  
+  .pw-card h2 {
+    font-size: 1.2rem;
+  }
+  
+  input, textarea, select {
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  .btn-red, .btn-outline, button {
+    font-size: 14px;
+    padding: 12px;
+  }
+  
+  /* Make tables scrollable on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 0.75rem;
+  }
+  
+  th, td {
+    padding: 6px 4px;
+  }
+  
+  /* Quiz cards */
+  .quiz-card {
+    padding: 1rem;
+  }
+  
+  /* Result boxes */
+  .result-box {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  /* Footer */
+  footer {
+    font-size: 0.8rem;
+    padding: 1rem;
+  }
+}
+
+/* Small Mobile Phones */
+@media (max-width: 360px) {
+  nav h1 {
+    font-size: 0.9rem;
+  }
+  
+  nav ul li a {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.4rem;
+  }
+  
+  .content {
+    padding: 0.8rem;
+  }
+  
+  .container {
+    padding: 0.6rem;
+  }
+  
+  h1 {
+    font-size: 1.3rem;
+  }
+  
+  .pw-card {
+    padding: 1rem;
+  }
+  
+  .btn-red, .btn-outline {
+    padding: 10px;
+    font-size: 13px;
+  }
+}
+
+/* Landscape mode for mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  nav {
+    padding: 0.5rem 1rem;
+  }
+  
+  nav h1 {
+    font-size: 1rem;
+  }
+  
+  nav ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .content {
+    margin: 0.5rem;
+  }
 }
 
 
